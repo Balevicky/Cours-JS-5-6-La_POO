@@ -29,7 +29,7 @@ h1 {
   letter-spacing: 2px;
   margin: 25px 0 25px;
 }
-.fa-undo {
+.fa-undo, .fa-rotate-left {
   font-size: 0.7rem;
   backdrop-filter: blur(2px);
   padding: 10px 14px;
@@ -41,7 +41,7 @@ h1 {
   transform: translateY(-5px);
   transition: 0.2s;
 }
-.fa-undo:hover {
+.fa-undo,.fa-rotate-left:hover {
   background: white;
   transform: translate(3px, -5px);
 }
@@ -70,11 +70,12 @@ li {
   box-shadow: -20px 20px 60px #75c2d4, 20px -20px 60px #9fffff;
   display: grid;
   grid-template-rows: 30px 1fr 35px;
-  grid-template-columns: 50% 50%;
+  /* grid-template-columns: 50% 50%; */
+  grid-template-columns: 35% 30% 35%;
   grid-template-areas:
-    "a a"
-    "b b"
-    "c d";
+    "a a a"
+    "b b b"
+    "c d  e";
 }
 .card-header {
   display: flex;
@@ -102,7 +103,9 @@ img {
   margin: 0 auto;
   grid-area: b;
 }
+
 li i {
+
   font-size: 1rem;
   color: #90becc;
   border-radius: 10px;
@@ -118,17 +121,39 @@ li i:hover {
 }
 .arrow {
   margin-right: 4px;
+  /* ajouter par vicky */
+  width:70px;
+   grid-area: c;
+}
+.arrowLefth {
+  margin-left: 4px;
+  /* ajouter par vicky */
+  width: 70px;
+   grid-area: e;
 }
 .deleteBtn {
-  margin-left: 4px;
+  /* margin-left: 4px; */
+  margin:0 2px;
+  /* ajouter par vicky */
+  width: 60px;
+   grid-area: d;
+  
 }
 .arrow:before,
-.deleteBtn:before {
+.deleteBtn:before,
+.arrowLefth:before{
   transform: translate(-50%, -50%);
   position: absolute;
   top: 50%;
   left: 50%;
 }
+/* .arrowLefth:before {
+  transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+} */
+
 #start {
   margin: 40px 0 80px;
   background: #d7d8d848;
@@ -178,7 +203,7 @@ li i:hover {
   border-radius: 12px;
   font-size: 1.1rem;
 }
-.btn-reboot .fa-times-circle {
+.btn-reboot .fa-times-circle .fa-circle-xmark .fa-circle-righ{
   font-size: 0.85rem;
   color: rgb(85, 84, 84);
   margin-left: 4px;

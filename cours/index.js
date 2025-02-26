@@ -135,7 +135,7 @@ class Dog extends Animal {
 }
 class Cat extends Animal {
   hurt() {
-    console.log("Jai tué un oiseau!!!");
+    console.log("J'ai tué un oiseau!!!");
   }
 }
 const rintintin = new Dog("rintintin", 9);
