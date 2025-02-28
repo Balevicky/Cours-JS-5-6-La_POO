@@ -1,5 +1,5 @@
 const main = document.querySelector("main");
-let exerciseArray = [
+const basicArray = [
   { pic: 0, min: 1 },
   { pic: 1, min: 1 },
   { pic: 2, min: 1 },
@@ -11,6 +11,27 @@ let exerciseArray = [
   { pic: 8, min: 1 },
   { pic: 9, min: 1 },
 ];
+let exerciseArray = [];
+// get storage exercises array// cette fonction se lance seul et  une seule fois
+(() => {
+  if (localStorage.exercises) {
+    exerciseArray = JSON.parse(localStorage.exercises);
+  } else {
+    exerciseArray = basicArray;
+    console.log("tes");
+  }
+})();
+
+// // window.addEventListener("laod", (e) => {
+// window.addEventListener("load", (event) => {
+//   if (localStorage.exercises) {
+//     exerciseArray = localStorage.exercises;
+//   } else {
+//     exerciseArray = basicArray;
+//     console.log("tes");
+//   }
+// });
+
 // ============================
 class Exercise {}
 // ==============================================
@@ -26,7 +47,8 @@ const utils = {
     document.querySelectorAll("input[type=number]").forEach((input) => {
       input.addEventListener("input", (e) => {
         exerciseArray[e.target.id].min = parseInt(e.target.value);
-        console.log(exerciseArray);
+        this.store();
+        // console.log(exerciseArray);
         ////   ===============code prof
         // exerciseArray.map((exo) => {
         //   if (exo.pic == e.target.id) {
@@ -46,26 +68,30 @@ const utils = {
         let position = 0;
 
         // ======================================
-        exerciseArray.map((exo) => {
-          if (exo.pic == e.target.dataset.pic) {
+        for (const exo in exerciseArray) {
+          if (exerciseArray[exo].pic == e.target.dataset.pic) {
             // console.log(e.target.dataset.pic);
             if (position - 1 < 0) {
-              alert("Vous ne pouvez plus delaplacer la carte vers la gauche");
+              alert("Vous ne pouvez pas delaplacer cette carte vers la gauche");
               return;
             } else {
               [exerciseArray[position], exerciseArray[position - 1]] = [
                 exerciseArray[position - 1],
                 exerciseArray[position],
               ];
+              console.log(exerciseArray);
+
               page.lobby();
+              this.store();
+              console.log(basicArray);
 
               return;
             }
           } else {
             position++;
-            console.log("position " + position);
+            // console.log("position " + position);
           }
-        });
+        }
       });
     });
   },
@@ -76,32 +102,62 @@ const utils = {
         // console.log(e.target.dataset.pic);
         let position = 0;
         let position1 = 0;
-        exerciseArray.map((exo) => {
-          if (exo.pic == e.target.dataset.pic && position !== 9) {
-            position1 = parseInt(position + 1);
-            console.log(position1);
-
-            [exerciseArray[position], exerciseArray[position1]] = [
-              exerciseArray[position1],
-              exerciseArray[position],
-            ];
-            console.log(exerciseArray);
-            console.log(
-              exo.pic,
-              e.target.dataset.pic,
-              "position " + position + " et " + position1
-            );
-            // position++;
-            page.lobby();
-            return;
+        // exerciseArray.map((exo) => {
+        for (const exo in exerciseArray) {
+          if (position < 9) {
+            if (exerciseArray[exo].pic == e.target.dataset.pic) {
+              position1 = parseInt(position + 1);
+              [exerciseArray[position], exerciseArray[position1]] = [
+                exerciseArray[position1],
+                exerciseArray[position],
+              ];
+              console.log(exerciseArray);
+              page.lobby();
+              this.store();
+              break;
+            } else {
+              console.log("test");
+              position++;
+            }
           } else {
-            console.log("test");
-            console.log(position);
+            alert("Vous ne pouvez pas delaplacer cette carte vers la drroite");
+            return;
           }
-          position++;
-        });
+        }
       });
     });
+  },
+  // ========================
+  handleEventDelete: function () {
+    document.querySelectorAll(".deleteBtn").forEach((deleteBtn) => {
+      deleteBtn.addEventListener("click", (e) => {
+        // console.log(e.target.dataset.pic);
+        let position = 0;
+
+        for (const exo in exerciseArray) {
+          if (exerciseArray[exo].pic == e.target.dataset.pic) {
+            console.log("test");
+            exerciseArray.splice(position, 1);
+            console.log(exerciseArray);
+            page.lobby();
+            this.store();
+            return;
+          } else {
+            position++;
+          }
+        }
+      });
+    });
+  },
+  // ========================
+  reboot: function () {
+    exerciseArray = basicArray;
+    page.lobby();
+    this.store();
+  },
+  // ========================
+  store: function () {
+    localStorage.exercises = JSON.stringify(exerciseArray);
   },
   // ========================
 };
@@ -140,7 +196,12 @@ const page = {
     utils.handleEventMinutes();
     utils.handleEventArrow();
     utils.handleEventArrowLefth();
+    utils.handleEventDelete();
+    // utils.reboot();
+    reboot.addEventListener("click", () => utils.reboot());
+    start.addEventListener("click", () => this.routine());
   },
+
   // ================ pour afficher la page(vue) d'exercie
   routine: function () {
     utils.pageContent("Routine", "Exercice avec chrono", null);
