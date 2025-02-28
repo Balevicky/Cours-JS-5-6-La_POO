@@ -33,7 +33,52 @@ let exerciseArray = [];
 // });
 
 // ============================
-class Exercise {}
+class Exercise {
+  constructor() {
+    this.index = 0;
+    this.minutes = exerciseArray[this.index].min;
+    this.seconds = 0;
+  }
+  updateCountdown() {
+    this.seconds = this.seconds < 10 ? "0" + this.seconds : this.seconds;
+    // this.minutes = this.minutes < 10 ? "0" + this.minutes : this.minutes;
+    setTimeout(() => {
+      if (this.minutes === 0 && this.seconds === "00") {
+        this.index++;
+        this.ring();
+
+        if (this.index < exerciseArray.length) {
+          this.minutes = exerciseArray[this.index].min;
+          this.seconds = 0;
+          this.updateCountdown();
+        } else {
+          return page.finish();
+        }
+      } else if (this.seconds === "00") {
+        this.minutes--;
+        this.seconds = 59;
+        this.updateCountdown();
+      } else {
+        this.seconds--;
+        this.updateCountdown();
+      }
+    }, 100);
+    return (main.innerHTML = `
+    <div class="exercice-container">
+  <p>${this.minutes}:${this.seconds}</p>
+  <img src="./img/${exerciseArray[this.index].pic}.png" />
+  <div>${this.index + 1}/ ${exerciseArray.length}</div>
+  </div>
+    `);
+  }
+
+  // ===================================
+  ring() {
+    const audio = new Audio();
+    audio.src = "ring.mp3";
+    audio.play();
+  }
+}
 // ==============================================
 const utils = {
   // ======= cette fonction est appelée dans les fonctions lobby, routine et finish
@@ -204,15 +249,19 @@ const page = {
 
   // ================ pour afficher la page(vue) d'exercie
   routine: function () {
-    utils.pageContent("Routine", "Exercice avec chrono", null);
+    const exercise = new Exercise();
+    utils.pageContent("Routine", exercise.updateCountdown(), null);
   },
   // ================ pour afficher la page(vue) de fin
+
   finish: function () {
     utils.pageContent(
       "C'est terminé",
       "<button id='start'>Recommencer</>",
       "<button id='reboot' class='btn-reboot'>Reinitialiser <i class='fa-solid fa-circle-xmark'></i></button>"
     );
+    reboot.addEventListener("click", () => utils.reboot());
+    start.addEventListener("click", () => this.routine());
   },
 };
 
